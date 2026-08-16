@@ -102,22 +102,6 @@
             text-transform: uppercase;
         }
 
-        .preview-box {
-            margin-top: 15px;
-            border: 2px solid #ff0000;
-            background: #000;
-            padding: 8px;
-            display: none;
-            color: #00ff00;
-        }
-
-        .preview-box img {
-            max-width: 100%;
-            height: auto;
-            border: 1px dashed #00ff00;
-            margin-top: 5px;
-        }
-
         .blink {
             animation: blinker 0.6s linear infinite;
         }
@@ -130,12 +114,12 @@
 <body>
 
 <div class="marquee-container">
-    <marquee>*** PORTALE WAP AUTOMATICO: SCEGLI, DIGITA IL NUMERO E INVIA I FILE MP3 + GIF! ***</marquee>
+    <marquee>*** SCEGLI LA SUONERIA, DIGITA IL NUMERO E INVIA L'SMS CON IL LINK MP3! ***</marquee>
 </div>
 
 <div class="container">
     <h1>JUMBO TONE 2000</h1>
-    <div class="sub-title">~* AUTOMAZIONE MOBILE *~</div>
+    <div class="sub-title">~* INVIO SMS LINK MP3 *~</div>
 
     <div class="screen" id="screen">
         1. Topolona<br>
@@ -162,14 +146,7 @@
         <button onclick="pressKey('#')">#</button>
     </div>
 
-    <button class="btn-action" style="background: #00ff00; color: #000;" onclick="runAutomationAndSend()">AVVIA AUTOMAZIONE E INVIA FILE 🚀</button>
-
-    <div class="preview-box" id="previewBox">
-        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" id="statusMsg" class="blink">ELABORAZIONE...</div>
-        <div id="detailsDisplay" style="font-size: 13px; margin-bottom: 8px; text-align: left; background: #000040; padding: 6px; border: 1px solid #00ff00;"></div>
-        <audio id="previewAudio" controls style="width: 100%; margin-bottom: 5px;"></audio>
-        <img id="previewGif" src="" alt="GIF Trash">
-    </div>
+    <button class="btn-action" style="background: #00ff00; color: #000;" onclick="sendSMS()">INVIA SMS CON LINK MP3 🚀</button>
 </div>
 
 <script>
@@ -186,13 +163,6 @@
         "6": { name: "Super Mario Theme", mp3: "https://www.myinstants.com/media/sounds/super-mario-bros.mp3" }
     };
 
-    const trashGifs = [
-        "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif",
-        "https://media.giphy.com/media/l0HlRnAWXxn0MhOBK/giphy.gif",
-        "https://media.giphy.com/media/10VxA3X7rC3W2s/giphy.gif",
-        "https://media.giphy.com/media/Ju7l5y9osyymQ/giphy.gif"
-    ];
-
     function pressKey(num) {
         let screen = document.getElementById("screen");
         
@@ -207,59 +177,29 @@
             }
         } else {
             if (num === '#') {
-                runAutomationAndSend();
+                sendSMS();
                 return;
             }
             recipientPhone += num;
             let songName = ringtonesData[selectedChoice].name;
-            screen.innerHTML = `SUONERIA: ${songName}<br>CELL: ${recipientPhone}_<br><br>(Premi # o il bottone per inviare)`;
+            screen.innerHTML = `SUONERIA: ${songName}<br>CELL: ${recipientPhone}_<br><br>(Premi # o il bottone SMS)`;
         }
     }
 
-    async function runAutomationAndSend() {
+    function sendSMS() {
         if (!selectedChoice || recipientPhone.length < 3) {
             alert("Seleziona prima la suoneria (1-6) e inserisci il numero di telefono!");
             return;
         }
 
-        let screen = document.getElementById("screen");
-        screen.innerHTML = `<span class="blink">BACKGROUND: DOWNLOAD MP3 & GIF... 💾</span>`;
-
         let song = ringtonesData[selectedChoice];
-        let randomGif = trashGifs[Math.floor(Math.random() * trashGifs.length)];
+        let smsText = encodeURIComponent(`Ecco la tua suoneria ${song.name}: scarica l'MP3 qui 👉 ${song.mp3}`);
+        
+        let screen = document.getElementById("screen");
+        screen.innerHTML = `APERTURA APP MESSAGGI...<br>DESTINATARIO: ${recipientPhone} ✨`;
 
-        try {
-            // Scarica i file binari reali per prepararli all'invio nativo
-            let mp3Blob = await fetch(song.mp3).then(r => r.blob());
-            let gifBlob = await fetch(randomGif).then(r => r.blob());
-
-            let mp3File = new File([mp3Blob], `${song.name}.mp3`, { type: "audio/mp3" });
-            let gifFile = new File([gifBlob], `trash_animata.gif`, { type: "image/gif" });
-
-            screen.innerHTML = `AUTOMAZIONE COMPLETATA!<br>INVIO A: ${recipientPhone} 🚀`;
-
-            // Mostra l'anteprima sul display retrò
-            let box = document.getElementById("previewBox");
-            document.getElementById("statusMsg").innerText = "FILE PRONTI PER L'INVIO!";
-            document.getElementById("detailsDisplay").innerHTML = `<b>Destinatario:</b> ${recipientPhone}<br><b>File:</b> ${song.name}.mp3 + GIF`;
-            document.getElementById("previewAudio").src = song.mp3;
-            document.getElementById("previewGif").src = randomGif;
-            box.style.display = "block";
-
-            // Attiva la condivisione nativa del telefono con i file reali allegati
-            if (navigator.canShare && navigator.canShare({ files: [mp3File, gifFile] })) {
-                await navigator.share({
-                    title: 'Jumbo Tone 2000',
-                    text: `Ecco la suoneria ${song.name} per il numero ${recipientPhone}!`,
-                    files: [mp3File, gifFile]
-                });
-            } else {
-                alert("Il browser ha elaborato i file, ma la condivisione diretta richiede l'apertura del menu di sistema.");
-            }
-        } catch (error) {
-            console.log("Errore automazione:", error);
-            alert("Elaborazione completata. Usa i comandi di riproduzione sottostanti.");
-        }
+        // Apre direttamente l'applicazione nativa SMS del telefono con numero e testo precompilati
+        window.location.href = `sms:${recipientPhone}?body=${smsText}`;
     }
 
     function clearScreen() {
@@ -267,8 +207,6 @@
         selectedChoice = "";
         recipientPhone = "";
         document.getElementById("screen").innerHTML = `1. Topolona<br>2. Axel F (Crazy Frog)<br>3. La Pulce (Virgola)<br>4. Dragostea Din Tei<br>5. The Ketchup Song<br>6. Super Mario Theme<br><span class="blink">> STEP 1: DIGITA N. (1-6)...</span>`;
-        document.getElementById("previewBox").style.display = "none";
-        document.getElementById("previewAudio").pause();
     }
 </script>
 
