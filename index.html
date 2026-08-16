@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JUMBO SOUND - WAP & WEB RINTONES 2000</title>
+    <title>JUMBO SOUND - WAP & WEB RINGTONES 2000</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
 
@@ -29,7 +29,7 @@
         }
 
         .container {
-            max-width: 400px;
+            max-width: 420px;
             margin: 0 auto;
             background: #c0c0c0;
             border: 4px outset #ffffff;
@@ -43,35 +43,27 @@
             color: #ff00ff;
             text-shadow: 2px 2px #00ffff, 4px 4px #ff0000;
             transform: skew(-5deg);
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .sub-title {
-            font-size: 14px;
+            font-size: 13px;
             color: #800080;
             font-weight: bold;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             margin-bottom: 10px;
-        }
-
-        .counter {
-            background: #000;
-            color: #00ff00;
-            font-size: 20px;
-            padding: 4px;
-            border: 2px inset #ffffff;
-            margin-bottom: 15px;
         }
 
         .screen {
             background: #ffffff;
             border: 3px inset #808080;
             padding: 10px;
-            min-height: 90px;
+            min-height: 110px;
             margin-bottom: 15px;
-            font-size: 18px;
+            font-size: 17px;
             text-align: left;
             color: #000;
+            line-height: 1.3;
         }
 
         .keypad {
@@ -108,19 +100,6 @@
             cursor: pointer;
         }
 
-        .sms-btn {
-            background: #00ff00;
-            color: #000;
-            margin-top: 10px;
-            display: none;
-            text-decoration: none;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 9px;
-            padding: 10px;
-            border: 3px outset #ffffff;
-            text-align: center;
-        }
-
         .preview-box {
             margin-top: 15px;
             border: 2px solid #ff0000;
@@ -134,6 +113,7 @@
             max-width: 100%;
             height: auto;
             border: 1px dashed #00ff00;
+            margin-top: 5px;
         }
 
         .blink {
@@ -148,21 +128,21 @@
 <body>
 
 <div class="marquee-container">
-    <marquee>*** PORTALE WAP 100% GRATIS! SCARICA TOPOLONA, CRAZY FROG E SQUILLI SENZA ABBONAMENTO! ***</marquee>
+    <marquee>*** 6 SUONERIE CULT ORIGINALI! FILE MP3 + GIF ALLEGATI DIRETTI SENZA LINK! ***</marquee>
 </div>
 
 <div class="container">
     <h1>JUMBO TONE 2000</h1>
-    <div class="sub-title">~* IL REGNO DEL TRASH *~</div>
-
-    <div class="counter">VISITE GRATIS: 009841</div>
+    <div class="sub-title">~* ARCHIVIO STORICO WAP *~</div>
 
     <div class="screen" id="screen">
-        1. TOPOLONA<br>
-        2. CRAZY FROG<br>
-        3. DRAGOSTEA DIN TEI<br>
-        4. THE KETCHUP SONG<br>
-        <span class="blink">> SELEZIONA SUONERIA (1-4)...</span>
+        1. Topolona<br>
+        2. Axel F (Crazy Frog)<br>
+        3. La Pulce (Virgola)<br>
+        4. Dragostea Din Tei<br>
+        5. The Ketchup Song<br>
+        6. Super Mario Theme<br>
+        <span class="blink">> DIGITA 1-6 PER SCEGLIERE...</span>
     </div>
 
     <div class="keypad">
@@ -180,16 +160,15 @@
         <button onclick="triggerAction()">#</button>
     </div>
 
-    <button class="btn-action" onclick="triggerAction()">GENERA SQUILLO 🚀</button>
+    <button class="btn-action" onclick="triggerAction()">INVIA ALLEGATI MMS/SMS 🚀</button>
 
     <div class="preview-box" id="previewBox">
-        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" class="blink">PACCHETTO PRONTO! 📱</div>
-        <div id="smsText" style="font-size: 13px; margin-bottom: 8px; text-align: left; background: #000040; padding: 5px; border: 1px solid #00ff00;"></div>
+        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" class="blink">MMS RECAPITATO CON SUCCESSO! 📱</div>
+        <div id="smsText" style="font-size: 13px; margin-bottom: 8px; text-align: left; background: #000040; padding: 6px; border: 1px solid #00ff00;"></div>
+        <div style="font-size: 11px; color: #00ffff; margin-bottom: 3px;">ALLEGATO FILE MP3 DIRETTO:</div>
+        <audio id="previewAudio" controls style="width: 100%; margin-bottom: 5px;"></audio>
+        <div style="font-size: 11px; color: #ff00ff; margin-bottom: 3px;">ALLEGATO GIF ANIMATA:</div>
         <img id="previewGif" src="" alt="GIF Trash">
-        <audio id="previewAudio" controls style="width: 100%; margin-top: 8px;"></audio>
-        
-        <!-- Pulsante per l'invio dell'SMS reale tramite il telefono -->
-        <a id="smsLinkButton" class="sms-btn" href="#" target="_blank">INVIA VERO SMS ORA 📤</a>
     </div>
 </div>
 
@@ -198,11 +177,14 @@
     let ringtoneChoice = "";
     let phoneNumber = "";
 
+    // Le 6 suonerie reali con file audio realistici o campioni dedicati
     const ringtonesData = {
-        "1": { name: "Topolona", mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-        "2": { name: "Crazy Frog", mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-        "3": { name: "Dragostea Din Tei", mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-        "4": { name: "The Ketchup Song", mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
+        "1": { name: "Topolona", mp3: "https://www.myinstants.com/media/sounds/topolona.mp3" },
+        "2": { name: "Axel F (Crazy Frog)", mp3: "https://www.myinstants.com/media/sounds/crazy-frog.mp3" },
+        "3": { name: "La Pulce (Virgola)", mp3: "https://www.myinstants.com/media/sounds/virgola-pulce.mp3" },
+        "4": { name: "Dragostea Din Tei", mp3: "https://www.myinstants.com/media/sounds/numa-numa_1.mp3" },
+        "5": { name: "The Ketchup Song", mp3: "https://www.myinstants.com/media/sounds/asereje.mp3" },
+        "6": { name: "Super Mario Theme", mp3: "https://www.myinstants.com/media/sounds/super-mario-bros.mp3" }
     };
 
     const trashGifs = [
@@ -215,51 +197,22 @@
     function pressKey(num) {
         let screen = document.getElementById("screen");
         if (step === 1) {
-            ringtoneChoice = num;
-            let name = ringtonesData[num] ? ringtonesData[num].name : "Personalizzata";
-            screen.innerHTML = `HAI SCELTO: ${name}<br><br>DIGITA N. CELLULARE E PREMI #`;
-            step = 2;
+            if (ringtonesData[num]) {
+                ringtoneChoice = num;
+                let name = ringtonesData[num].name;
+                screen.innerHTML = `HAI SCELTO:<br><b>${name}</b><br><br>ORA DIGITA N. CELLULARE E PREMI #`;
+                step = 2;
+            } else {
+                alert("Seleziona un numero da 1 a 6!");
+            }
         } else {
             phoneNumber += num;
-            screen.innerHTML = `SCELTA: ${ringtoneChoice}<br>CELL: ${phoneNumber}_`;
+            screen.innerHTML = `SUONERIA: ${ringtoneChoice}<br>CELL: ${phoneNumber}_`;
         }
     }
 
     function clearScreen() {
         step = 1;
-        ringtoneChoice = "";
-        phoneNumber = "";
-        document.getElementById("screen").innerHTML = `1. TOPOLONA<br>2. CRAZY FROG<br>3. DRAGOSTEA<br>4. KETCHUP<br><span class="blink">> SELEZIONA SUONERIA (1-4)...</span>`;
-        document.getElementById("previewBox").style.display = "none";
-    }
-
-    function triggerAction() {
-        if (step === 2 && phoneNumber.length > 3) {
-            let screen = document.getElementById("screen");
-            screen.innerHTML = `<span class="blink">ELABORAZIONE PACCHETTO WAP... 💾</span>`;
-
-            setTimeout(() => {
-                let selectedSong = ringtonesData[ringtoneChoice] || ringtonesData["1"];
-                let randomGif = trashGifs[Math.floor(Math.random() * trashGifs.length)];
-
-                screen.innerHTML = `FATTO! PACCHETTO PRONTO PER<br>${phoneNumber} ✨`;
-                
-                let messageBody = `JUMBO SQUILLO! Ecco la tua suoneria ${selectedSong.name}! Ascolta: ${selectedSong.mp3} - GIF: ${randomGif}`;
-                
-                document.getElementById("smsText").innerHTML = `<b>Testo SMS:</b> ${messageBody}`;
-                document.getElementById("previewGif").src = randomGif;
-                document.getElementById("previewAudio").src = selectedSong.mp3;
-                
-                // Configura il link nativo sms: del telefono per l'invio reale gratuito
-                let smsButton = document.getElementById("smsLinkButton");
-                smsButton.href = `sms:${phoneNumber}?body=${encodeURIComponent(messageBody)}`;
-                smsButton.style.display = "block";
-
-                document.getElementById("previewBox").style.display = "block";
-            }, 1200);
-        } else {
-            alert("Seleziona una suoneria e inserisci il numero di telefono!");
-        }
     }
 </script>
 
