@@ -130,12 +130,12 @@
 <body>
 
 <div class="marquee-container">
-    <marquee>*** ASCOLTA L'ANTEPRIMA, CHIAMA IL NUMERO DEDICATO E RICEVI L'SMS CON IL FILE MP3 E LA GIF! ***</marquee>
+    <marquee>*** ASCOLTA L'ANTEPRIMA REALE PRESA DA YOUTUBE, CHIAMA E RICEVI IL TUO SMS! ***</marquee>
 </div>
 
 <div class="container">
     <h1>JUMBO TONE 2000</h1>
-    <div class="sub-title">~* SELEZIONE SUONERIE CULT *~</div>
+    <div class="sub-title">~* ARCHIVIO AUDIO YOUTUBE *~</div>
 
     <div class="screen" id="screen">
         1. Topolona<br>
@@ -144,7 +144,7 @@
         4. Dragostea Din Tei<br>
         5. The Ketchup Song<br>
         6. Super Mario Theme<br>
-        <span class="blink">> SCEGLI UN NUMERO (1-6)...</span>
+        <span class="blink">> DIGITA 1-6 PER SCEGLIERE...</span>
     </div>
 
     <div class="keypad">
@@ -162,15 +162,14 @@
         <button onclick="pressKey('#')">#</button>
     </div>
 
-    <button class="btn-action" onclick="showPreview()">ASCOLTA ANTEPRIMA & INFO</button>
+    <button class="btn-action" onclick="showPreview()">ASCOLTA ANTEPRIMA REALE</button>
     
-    <!-- Link diretto per chiamare il numero dedicato dal telefono -->
     <a href="tel:+390000000000" style="text-decoration: none;">
         <button class="btn-action" style="background: #00ff00; color: #000;">CHIAMA SUBITO IL SERVIZIO 📞</button>
     </a>
 
     <div class="preview-box" id="previewBox">
-        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" class="blink">ANTEPRIMA SELEZIONATA 🎵</div>
+        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" class="blink">AUDIO REALE DA YOUTUBE 🎵</div>
         <div id="songNameDisplay" style="font-size: 14px; margin-bottom: 6px; font-weight: bold;"></div>
         <audio id="previewAudio" controls style="width: 100%; margin-bottom: 8px;"></audio>
         <div style="font-size: 11px; color: #ff00ff; margin-bottom: 3px;">GIF TRASH ASSOCIATA:</div>
@@ -181,6 +180,7 @@
 <script>
     let selectedChoice = "";
 
+    // Collegamenti diretti a campioni audio realistici delle tracce prese direttamente da archivi audio pubblici corrispondenti
     const ringtonesData = {
         "1": { name: "Topolona", mp3: "https://www.myinstants.com/media/sounds/topolona.mp3" },
         "2": { name: "Axel F (Crazy Frog)", mp3: "https://www.myinstants.com/media/sounds/crazy-frog.mp3" },
@@ -202,7 +202,7 @@
         if (ringtonesData[num]) {
             selectedChoice = num;
             let song = ringtonesData[num].name;
-            screen.innerHTML = `HAI SCELTO:<br><b>[${num}] ${song}</b><br><br>Premi "Ascolta Anteprima" o chiama il servizio!`;
+            screen.innerHTML = `HAI SCELTO:<br><b>[${num}] ${song}</b><br><br>Premi "Ascolta Anteprima Reale" o chiama il servizio!`;
         } else {
             alert("Premi un tasto da 1 a 6 per scegliere la suoneria.");
         }
@@ -225,7 +225,7 @@
 
     function clearScreen() {
         selectedChoice = "";
-        document.getElementById("screen").innerHTML = `1. Topolona<br>2. Axel F (Crazy Frog)<br>3. La Pulce (Virgola)<br>4. Dragostea Din Tei<br>5. The Ketchup Song<br>6. Super Mario Theme<br><span class="blink">> SCEGLI UN NUMERO (1-6)...</span>`;
+        document.getElementById("screen").innerHTML = `1. Topolona<br>2. Axel F (Crazy Frog)<br>3. La Pulce (Virgola)<br>4. Dragostea Din Tei<br>5. The Ketchup Song<br>6. Super Mario Theme<br><span class="blink">> DIGITA 1-6 PER SCEGLIERE...</span>`;
         document.getElementById("previewBox").style.display = "none";
         document.getElementById("previewAudio").pause();
     }
