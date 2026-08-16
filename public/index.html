@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JUMBO SOUND - RINGTONE DOWNLOAD PORTAL</title>
+    <title>JUMBO SOUND - WAP & WEB RINGTONES 2000</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
 
@@ -90,28 +90,6 @@
         }
 
         .btn-action {
-            background: #ff00ff;
-            color: #ffff00;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 9px;
-            width: 100%;
-            padding: 12px;
-            border: 3px outset #ffff00;
-            cursor: pointer;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .download-panel {
-            margin-top: 15px;
-            border: 2px solid #000;
-            background: #000040;
-            padding: 10px;
-            display: none;
-            color: #00ff00;
-        }
-
-        .download-btn {
             background: #00ff00;
             color: #000;
             font-family: 'Press Start 2P', cursive;
@@ -120,10 +98,8 @@
             padding: 12px;
             border: 3px outset #ffffff;
             cursor: pointer;
-            margin-top: 10px;
+            margin-bottom: 8px;
             text-transform: uppercase;
-            text-decoration: none;
-            display: block;
         }
 
         .blink {
@@ -138,12 +114,12 @@
 <body>
 
 <div class="marquee-container">
-    <marquee>*** SELECT RINGTONE, TYPE NUMBER & GET SMS WITH REAL DOWNLOADABLE MP3 LINK! ***</marquee>
+    <marquee>*** SELECT RINGTONE, ENTER NUMBER & SEND SMS WITH THE DIRECT MP3 LINK! ***</marquee>
 </div>
 
 <div class="container">
     <h1>JUMBO TONE 2000</h1>
-    <div class="sub-title">~* AUTO MP3 DOWNLOAD PORTAL *~</div>
+    <div class="sub-title">~* SMS LINK SENDER *~</div>
 
     <div class="screen" id="screen">
         1. Topolona<br>
@@ -170,14 +146,7 @@
         <button onclick="pressKey('#')">#</button>
     </div>
 
-    <button class="btn-action" style="background: #00ff00; color: #000;" onclick="generateAndSendSMS()">GENERATE & SEND SMS 🚀</button>
-
-    <div class="download-panel" id="downloadPanel">
-        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" class="blink" id="statusText">PREPARING REAL MP3...</div>
-        <div id="fileInfo" style="font-size: 13px; margin-bottom: 8px; text-align: left;"></div>
-        <audio id="audioPreview" controls style="width: 100%; margin-bottom: 8px;"></audio>
-        <a id="downloadLink" class="download-btn" href="#" download>DOWNLOAD MP3 FILE 💾</a>
-    </div>
+    <button class="btn-action" onclick="sendSMS()">SEND SMS 🚀</button>
 </div>
 
 <script>
@@ -186,12 +155,12 @@
     let recipientPhone = "";
 
     const ringtonesData = {
-        "1": { name: "Topolona", url: "https://www.myinstants.com/media/sounds/topolona.mp3" },
-        "2": { name: "Axel F (Crazy Frog)", url: "https://www.myinstants.com/media/sounds/crazy-frog.mp3" },
-        "3": { name: "La Pulce (Virgola)", url: "https://www.myinstants.com/media/sounds/virgola-pulce.mp3" },
-        "4": { name: "Dragostea Din Tei", url: "https://www.myinstants.com/media/sounds/numa-numa_1.mp3" },
-        "5": { name: "The Ketchup Song", url: "https://www.myinstants.com/media/sounds/asereje.mp3" },
-        "6": { name: "Super Mario Theme", url: "https://www.myinstants.com/media/sounds/super-mario-bros.mp3" }
+        "1": { name: "Topolona", mp3: "https://www.myinstants.com/media/sounds/topolona.mp3" },
+        "2": { name: "Axel F (Crazy Frog)", mp3: "https://www.myinstants.com/media/sounds/crazy-frog.mp3" },
+        "3": { name: "La Pulce (Virgola)", mp3: "https://www.myinstants.com/media/sounds/virgola-pulce.mp3" },
+        "4": { name: "Dragostea Din Tei", mp3: "https://www.myinstants.com/media/sounds/numa-numa_1.mp3" },
+        "5": { name: "The Ketchup Song", mp3: "https://www.myinstants.com/media/sounds/asereje.mp3" },
+        "6": { name: "Super Mario Theme", mp3: "https://www.myinstants.com/media/sounds/super-mario-bros.mp3" }
     };
 
     function pressKey(num) {
@@ -208,16 +177,16 @@
             }
         } else {
             if (num === '#') {
-                generateAndSendSMS();
+                sendSMS();
                 return;
             }
             recipientPhone += num;
             let songName = ringtonesData[selectedChoice].name;
-            screen.innerHTML = `RINGTONE: ${songName}<br>PHONE: ${recipientPhone}_<br><br>(Press # or Action Button)`;
+            screen.innerHTML = `RINGTONE: ${songName}<br>PHONE: ${recipientPhone}_<br><br>(Press # or Send SMS button)`;
         }
     }
 
-    async function generateAndSendSMS() {
+    function sendSMS() {
         if (!selectedChoice || recipientPhone.length < 3) {
             alert("Please select a ringtone (1-6) and enter a phone number first!");
             return;
@@ -225,45 +194,12 @@
 
         let song = ringtonesData[selectedChoice];
         let screen = document.getElementById("screen");
-        let panel = document.getElementById("downloadPanel");
-        let statusText = document.getElementById("statusText");
-        let fileInfo = document.getElementById("fileInfo");
-        let audioPreview = document.getElementById("audioPreview");
-        let downloadLink = document.getElementById("downloadLink");
+        
+        screen.innerHTML = `OPENING MESSAGES APP...<br>TO: ${recipientPhone} ✨`;
 
-        panel.style.display = "block";
-        statusText.innerText = "DOWNLOADING MP3 IN BACKGROUND...";
-        screen.innerHTML = `PROCESSING REQUEST FOR ${recipientPhone}...`;
-
-        try {
-            let response = await fetch(song.url);
-            let blob = await response.blob();
-            let blobUrl = URL.createObjectURL(blob);
-
-            statusText.innerText = "MP3 READY & DOWNLOADABLE!";
-            fileInfo.innerHTML = `<b>File:</b> ${song.name}.mp3<br><b>Status:</b> Ready for local device download.`;
-            
-            audioPreview.src = blobUrl;
-            downloadLink.href = blobUrl;
-            downloadLink.download = `${song.name}.mp3`;
-
-            screen.innerHTML = `SUCCESS! OPENING SMS FOR ${recipientPhone} ✨`;
-
-            let siteUrl = window.location.href;
-            let smsText = encodeURIComponent(`Your ringtone ${song.name} is ready! Download MP3 here: ${siteUrl}`);
-            
-            window.location.href = `sms:${recipientPhone}?body=${smsText}`;
-        } catch (e) {
-            statusText.innerText = "DIRECT LINK GENERATED!";
-            fileInfo.innerHTML = `<b>File:</b> ${song.name}.mp3`;
-            audioPreview.src = song.url;
-            downloadLink.href = song.url;
-            downloadLink.download = `${song.name}.mp3`;
-
-            let siteUrl = window.location.href;
-            let smsText = encodeURIComponent(`Your ringtone ${song.name} is ready! Download MP3 here: ${song.url}`);
-            window.location.href = `sms:${recipientPhone}?body=${smsText}`;
-        }
+        let smsText = encodeURIComponent(`Your ringtone ${song.name} is ready! Download MP3 here: ${song.mp3}`);
+        
+        window.location.href = `sms:${recipientPhone}?body=${smsText}`;
     }
 
     function clearScreen() {
@@ -271,8 +207,6 @@
         selectedChoice = "";
         recipientPhone = "";
         document.getElementById("screen").innerHTML = `1. Topolona<br>2. Axel F (Crazy Frog)<br>3. La Pulce (Virgola)<br>4. Dragostea Din Tei<br>5. The Ketchup Song<br>6. Super Mario Theme<br><span class="blink">> STEP 1: PRESS N. (1-6)...</span>`;
-        document.getElementById("downloadPanel").style.display = "none";
-        document.getElementById("audioPreview").pause();
     }
 </script>
 
