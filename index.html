@@ -21,7 +21,7 @@
             background: #ffff00;
             color: #ff0000;
             font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
+            font-size: 10px;
             padding: 8px;
             border: 2px dashed #ff00ff;
             margin-bottom: 20px;
@@ -39,17 +39,26 @@
 
         h1 {
             font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
+            font-size: 12px;
             color: #ff00ff;
             text-shadow: 2px 2px #00ffff, 4px 4px #ff0000;
+            transform: skew(-5deg);
+            margin-bottom: 10px;
+        }
+
+        .sub-title {
+            font-size: 14px;
+            color: #800080;
+            font-weight: bold;
+            letter-spacing: 2px;
             margin-bottom: 10px;
         }
 
         .counter {
             background: #000;
             color: #00ff00;
-            font-size: 24px;
-            padding: 5px;
+            font-size: 20px;
+            padding: 4px;
             border: 2px inset #ffffff;
             margin-bottom: 15px;
         }
@@ -58,9 +67,9 @@
             background: #ffffff;
             border: 3px inset #808080;
             padding: 10px;
-            min-height: 80px;
+            min-height: 90px;
             margin-bottom: 15px;
-            font-size: 20px;
+            font-size: 18px;
             text-align: left;
             color: #000;
         }
@@ -76,7 +85,7 @@
             background: #dfdfdf;
             border: 3px outset #ffffff;
             font-family: 'VT323', monospace;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: bold;
             padding: 10px;
             cursor: pointer;
@@ -89,29 +98,33 @@
         }
 
         .btn-action {
-            background: #00ff00;
-            color: #000;
+            background: #ff00ff;
+            color: #ffff00;
             font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
+            font-size: 9px;
             width: 100%;
             padding: 12px;
-            margin-top: 5px;
+            border: 3px outset #ffff00;
+            cursor: pointer;
         }
 
-        .gif-box {
+        .preview-box {
             margin-top: 15px;
-            border: 2px solid #ff00ff;
+            border: 2px solid #ff0000;
             background: #000;
-            padding: 5px;
+            padding: 8px;
+            display: none;
+            color: #00ff00;
         }
 
-        .gif-box img {
+        .preview-box img {
             max-width: 100%;
             height: auto;
+            border: 1px dashed #00ff00;
         }
 
         .blink {
-            animation: blinker 0.8s linear infinite;
+            animation: blinker 0.6s linear infinite;
         }
 
         @keyframes blinker {
@@ -122,21 +135,21 @@
 <body>
 
 <div class="marquee-container">
-    <marquee>*** BENVENUTO NEL PORTALE WAP JUMBO! SCARICA TOPOLONA E CRAZY FROG GRATIS! ACCETTIAMO LOGHI E SQUILLI! ***</marquee>
+    <marquee>*** PORTALE WAP 100% GRATIS! SCARICA TOPOLONA, CRAZY FROG E SQUILLI SENZA ABBONAMENTO! ***</marquee>
 </div>
 
 <div class="container">
     <h1>JUMBO TONE 2000</h1>
-    <div style="font-size: 12px; color: #555; margin-bottom: 10px;">SE VUOI IL TRASH, QUI LO TROVI!</div>
+    <div class="sub-title">~* IL REGNO DEL TRASH *~</div>
 
-    <div class="counter">VISITE: 004892</div>
+    <div class="counter">VISITE GRATIS: 009841</div>
 
     <div class="screen" id="screen">
         1. TOPOLONA<br>
         2. CRAZY FROG<br>
         3. DRAGOSTEA DIN TEI<br>
         4. THE KETCHUP SONG<br>
-        <span class="blink">> SELEZIONA NUMERO...</span>
+        <span class="blink">> SELEZIONA SUONERIA (1-4)...</span>
     </div>
 
     <div class="keypad">
@@ -151,23 +164,32 @@
         <button onclick="pressKey('9')">9</button>
         <button onclick="clearScreen()">C</button>
         <button onclick="pressKey('0')">0</button>
-        <button onclick="submitData()">#</button>
+        <button onclick="triggerAction()">#</button>
     </div>
 
-    <button class="btn-action" onclick="submitData()">INVIA SUPERSQUILLO</button>
+    <button class="btn-action" onclick="triggerAction()">INVIA SQUILLO GRATIS 🚀</button>
 
-    <div class="gif-box" id="result-box" style="display:none;">
-        <div style="color: #00ff00; font-size: 14px; margin-bottom: 5px;">BOOM! INVIATO!</div>
-        <img id="random-gif" src="" alt="Trash GIF">
+    <div class="preview-box" id="previewBox">
+        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" class="blink">SMS SIMULATO INVIATO! 📱</div>
+        <div id="smsText" style="font-size: 14px; margin-bottom: 8px; text-align: left; background: #000040; padding: 5px; border: 1px solid #00ff00;"></div>
+        <img id="previewGif" src="" alt="GIF Trash">
+        <audio id="previewAudio" controls style="width: 100%; margin-top: 8px;"></audio>
     </div>
 </div>
 
 <script>
-    let inputStep = 1; // 1 = scelta suoneria, 2 = inserimento numero destinatario
-    let selectedRingtone = "";
-    let recipientNumber = "";
+    let step = 1;
+    let ringtoneChoice = "";
+    let phoneNumber = "";
 
-    const gifs = [
+    const ringtonesData = {
+        "1": { name: "Topolona", mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+        "2": { name: "Crazy Frog", mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+        "3": { name: "Dragostea Din Tei", mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+        "4": { name: "The Ketchup Song", mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
+    };
+
+    const trashGifs = [
         "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif",
         "https://media.giphy.com/media/l0HlRnAWXxn0MhOBK/giphy.gif",
         "https://media.giphy.com/media/10VxA3X7rC3W2s/giphy.gif",
@@ -176,37 +198,43 @@
 
     function pressKey(num) {
         let screen = document.getElementById("screen");
-        if (inputStep === 1) {
-            selectedRingtone = num;
-            screen.innerHTML = `HAI SCELTO: ${num}<br><br>INSERISCI N. DESTINATARIO E PREMI #`;
-            inputStep = 2;
+        if (step === 1) {
+            ringtoneChoice = num;
+            let name = ringtonesData[num] ? ringtonesData[num].name : "Personalizzata";
+            screen.innerHTML = `HAI SCELTO: ${name}<br><br>DIGITA N. CELLULARE E PREMI #`;
+            step = 2;
         } else {
-            recipientNumber += num;
-            screen.innerHTML = `SUONERIA: ${selectedRingtone}<br>CELL: ${recipientNumber}_`;
+            phoneNumber += num;
+            screen.innerHTML = `SCELTA: ${ringtoneChoice}<br>CELL: ${phoneNumber}_`;
         }
     }
 
     function clearScreen() {
-        inputStep = 1;
-        selectedRingtone = "";
-        recipientNumber = "";
-        document.getElementById("screen").innerHTML = `1. TOPOLONA<br>2. CRAZY FROG<br>3. DRAGOSTEA<br>4. KETCHUP<br><span class="blink">> SELEZIONA NUMERO...</span>`;
-        document.getElementById("result-box").style.display = "none";
+        step = 1;
+        ringtoneChoice = "";
+        phoneNumber = "";
+        document.getElementById("screen").innerHTML = `1. TOPOLONA<br>2. CRAZY FROG<br>3. DRAGOSTEA<br>4. KETCHUP<br><span class="blink">> SELEZIONA SUONERIA (1-4)...</span>`;
+        document.getElementById("previewBox").style.display = "none";
     }
 
-    function submitData() {
-        if (inputStep === 2 && recipientNumber.length > 3) {
+    function triggerAction() {
+        if (step === 2 && phoneNumber.length > 3) {
             let screen = document.getElementById("screen");
-            screen.innerHTML = `<span class="blink">ELABORAZIONE MP3 DA YT... 💾</span>`;
-            
+            screen.innerHTML = `<span class="blink">ELABORAZIONE PACCHETTO WAP... 💾</span>`;
+
             setTimeout(() => {
-                screen.innerHTML = `FATTO! MP3 E GIF SPEDITI A<br>${recipientNumber} 🚀`;
-                let randomGif = gifs[Math.floor(Math.random() * gifs.length)];
-                document.getElementById("random-gif").src = randomGif;
-                document.getElementById("result-box").style.display = "block";
-            }, 1500);
+                let selectedSong = ringtonesData[ringtoneChoice] || ringtonesData["1"];
+                let randomGif = trashGifs[Math.floor(Math.random() * trashGifs.length)];
+
+                screen.innerHTML = `FATTO! CONTENUTO RECAPITATO A<br>${phoneNumber} ✨`;
+                
+                document.getElementById("smsText").innerHTML = `<b>SMS a ${phoneNumber}:</b> Ecco il tuo file MP3 e la GIF retrò della suoneria <b>${selectedSong.name}</b>!`;
+                document.getElementById("previewGif").src = randomGif;
+                document.getElementById("previewAudio").src = selectedSong.mp3;
+                document.getElementById("previewBox").style.display = "block";
+            }, 1200);
         } else {
-            alert("Inserisci prima la scelta e il numero di telefono!");
+            alert("Seleziona una suoneria e inserisci il numero di telefono!");
         }
     }
 </script>
