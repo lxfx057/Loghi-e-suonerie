@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>ZIG - Topolona Club WAP Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="tv-banner">🔴RETRO TV LIVE: SPEDISCI "TOPOLONA" AL 48484🔴</div>
+    
+    <div class="container">
+        <header>
+            <h1>ZIG!</h1>
+            <p class="subtitle">Il tuo portale ufficiale di loghi & suonerie</p>
+        </header>
+
+        <!-- Sezione Vetrina -->
+        <section class="store-section">
+            <h2>🔥 TOP CONTENUTO DEL MESE 🔥</h2>
+            <div class="item-card">
+                <h3>TOPOLONA (Suoneria + Logo B/N)</h3>
+                <div class="preview-box">
+                    <!-- Logo in Pixel Art -->
+                    <canvas id="logoCanvas" width="72" height="14"></canvas>
+                </div>
+                <button id="playRingtoneBtn" class="retro-btn">🎶 Ascolta Anteprima</button>
+            </div>
+        </section>
+
+        <!-- Sezione Simulatore SMS / Gateway -->
+        <section class="sms-gateway">
+            <h2>📱 Invia SMS di Attivazione</h2>
+            <div class="form-group">
+                <label>Codice Servizio:</label>
+                <input type="text" id="smsCode" value="TOPOLONA" readonly>
+            </div>
+            <div class="form-group">
+                <label>Tuo Numero / Nick:</label>
+                <input type="text" id="userAlias" value="Utente_Retro2000">
+            </div>
+            <button id="sendSmsBtn" class="retro-btn danger">INVIA SMS (Costo: 5€ + IVA)</button>
+        </section>
+
+        <!-- Sezione Ricezione / Log in Tempo Reale -->
+        <section class="inbox-section">
+            <h2>📥 Ricezione WAP / SMS in arrivo</h2>
+            <div id="messageLog" class="terminal-box">
+                [Sistema] Pronto alla ricezione dei pacchetti SMS...<br>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
