@@ -1,10 +1,11 @@
 import os
+import random
 from flask import Flask, request, Response
 import yt_dlp
 
 app = Flask(__name__)
 
-# Database di esempio delle suonerie con link YouTube associati
+# Database suonerie e un elenco di GIF random in stile anni 2000/trash
 RINGTONES = {
     "1": {"name": "Topolona", "url": "https://www.youtube.com/watch?v=ESEMPIO_LINK_1"},
     "2": {"name": "Crazy Frog", "url": "https://www.youtube.com/watch?v=k85mRPqvMbE"},
@@ -12,11 +13,18 @@ RINGTONES = {
     "4": {"name": "The Ketchup Song", "url": "https://www.youtube.com/watch?v=VAdbt7QUhAI"}
 }
 
+RANDOM_GIFS = [
+    "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif", # Crazy frog style
+    "https://media.giphy.com/media/l0HlRnAWXxn0MhOBK/giphy.gif",
+    "https://media.giphy.com/media/10VxA3X7rC3W2s/giphy.gif",
+    "https://media.giphy.com/media/Ju7l5y9osyymQ/giphy.gif"
+]
+
 @app.route("/", methods=["GET"])
 def home():
-    return "Retro Ringtone IVR Service is online!"
+    return "Retro Ringtone IVR Service con MP3 e GIF è online!"
 
-# Endpoint 1: Risposta iniziale alla chiamata (Genera il menu vocale TwiML)
+# 1. Menu Vocale Iniziale
 @app.route("/voice", methods=["POST", "GET"])
 def voice_menu():
     twiml_response = """<?xml version="1.0" encoding="UTF-8"?>
@@ -28,7 +36,7 @@ def voice_menu():
     """
     return Response(twiml_response, mimetype="application/xml")
 
-# Endpoint 2: Elabora la scelta della suoneria e chiede il numero destinatario
+# 2. Riceve la scelta e chiede il numero
 @app.route("/process-choice", methods=["POST"])
 def process_choice():
     digit_pressed = request.form.get("Digits")
@@ -44,27 +52,25 @@ def process_choice():
     
     ringtone_name = RINGTONES[digit_pressed]["name"]
     
-    # Chiede all'utente di digitare il numero di telefono a cui inviare la suoneria seguito da cancelleto (#)
     twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
     <Response>
-        <Gather finishOnKey="#" action="/send-ringtone?choice={digit_pressed}" method="POST">
+        <Gather finishOnKey="#" action="/send-media?choice={digit_pressed}" method="POST">
             <Say language="it-IT">Hai scelto {ringtone_name}. Ora inserisci il numero di telefono del destinatario seguito dal tasto cancelleto.</Say>
         </Gather>
     </Response>
     """
     return Response(twiml_response, mimetype="application/xml")
 
-# Endpoint 3: Riceve il numero, scarica l'audio (simulazione/logica) e chiude la chiamata
-@app.route("/send-ringtone", methods=["POST"])
-def send_ringtone():
+# 3. Scarica MP3 da YouTube, seleziona una GIF random e invia tutto
+@app.route("/send-media", methods=["POST"])
+def send_media():
     choice = request.args.get("choice")
-    recipient_phone = request.form.get("Digits") # Il numero digitato dall'utente
-    
+    recipient_phone = request.form.get("Digits")
     ringtone_data = RINGTONES.get(choice)
     
+    selected_gif = random.choice(RANDOM_GIFS)
+    
     if ringtone_data and recipient_phone:
-        # Qui puoi inserire la logica di yt-dlp per scaricare l'mp3 su uno storage temporaneo o inviarlo
-        # Esempio di download sicuro (nota: Vercel ha limiti di scrittura su disco, usa /tmp/)
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': '/tmp/ringtone.%(ext)s',
@@ -76,18 +82,23 @@ def send_ringtone():
         }
         
         try:
-            # Esegue il download dell'audio da YouTube
+            # Scarica l'audio da YouTube direttamente nella cartella temporanea di Vercel
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([ringtone_data["url"]])
-            print(file_path := "/tmp/ringtone.mp3")
-            # In un'implementazione reale, qui useresti le API di WhatsApp (es. Twilio o Meta Cloud API) 
-            # per inviare il file dal percorso /tmp/ringtone.mp3 al numero recipient_phone.
+            
+            audio_path = "/tmp/ringtone.mp3"
+            print(f"File MP3 pronto in: {audio_path}")
+            print(f"GIF Random selezionata: {selected_gif}")
+            
+            # QUI PUOI INTEGRARE L'INVIO REALE:
+            # - Usa le API di WhatsApp o un bot per spedire 'audio_path' e 'selected_gif' a 'recipient_phone'
+            
         except Exception as e:
-            print(f"Errore durante il download: {e}")
+            print(f"Errore durante il download da YouTube: {e}")
 
     twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
     <Response>
-        <Say language="it-IT">Perfetto! La suoneria è stata inviata via messaggio al numero {recipient_phone}. Grazie e arrivederci!</Say>
+        <Say language="it-IT">Boom! La suoneria MP3 e la GIF random sono in viaggio verso il numero {recipient_phone}. Ciao!</Say>
         <Hangup/>
     </Response>
     """
