@@ -108,6 +108,19 @@
             cursor: pointer;
         }
 
+        .sms-btn {
+            background: #00ff00;
+            color: #000;
+            margin-top: 10px;
+            display: none;
+            text-decoration: none;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 9px;
+            padding: 10px;
+            border: 3px outset #ffffff;
+            text-align: center;
+        }
+
         .preview-box {
             margin-top: 15px;
             border: 2px solid #ff0000;
@@ -167,13 +180,16 @@
         <button onclick="triggerAction()">#</button>
     </div>
 
-    <button class="btn-action" onclick="triggerAction()">INVIA SQUILLO GRATIS 🚀</button>
+    <button class="btn-action" onclick="triggerAction()">GENERA SQUILLO 🚀</button>
 
     <div class="preview-box" id="previewBox">
-        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" class="blink">SMS SIMULATO INVIATO! 📱</div>
-        <div id="smsText" style="font-size: 14px; margin-bottom: 8px; text-align: left; background: #000040; padding: 5px; border: 1px solid #00ff00;"></div>
+        <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" class="blink">PACCHETTO PRONTO! 📱</div>
+        <div id="smsText" style="font-size: 13px; margin-bottom: 8px; text-align: left; background: #000040; padding: 5px; border: 1px solid #00ff00;"></div>
         <img id="previewGif" src="" alt="GIF Trash">
         <audio id="previewAudio" controls style="width: 100%; margin-top: 8px;"></audio>
+        
+        <!-- Pulsante per l'invio dell'SMS reale tramite il telefono -->
+        <a id="smsLinkButton" class="sms-btn" href="#" target="_blank">INVIA VERO SMS ORA 📤</a>
     </div>
 </div>
 
@@ -226,11 +242,19 @@
                 let selectedSong = ringtonesData[ringtoneChoice] || ringtonesData["1"];
                 let randomGif = trashGifs[Math.floor(Math.random() * trashGifs.length)];
 
-                screen.innerHTML = `FATTO! CONTENUTO RECAPITATO A<br>${phoneNumber} ✨`;
+                screen.innerHTML = `FATTO! PACCHETTO PRONTO PER<br>${phoneNumber} ✨`;
                 
-                document.getElementById("smsText").innerHTML = `<b>SMS a ${phoneNumber}:</b> Ecco il tuo file MP3 e la GIF retrò della suoneria <b>${selectedSong.name}</b>!`;
+                let messageBody = `JUMBO SQUILLO! Ecco la tua suoneria ${selectedSong.name}! Ascolta: ${selectedSong.mp3} - GIF: ${randomGif}`;
+                
+                document.getElementById("smsText").innerHTML = `<b>Testo SMS:</b> ${messageBody}`;
                 document.getElementById("previewGif").src = randomGif;
                 document.getElementById("previewAudio").src = selectedSong.mp3;
+                
+                // Configura il link nativo sms: del telefono per l'invio reale gratuito
+                let smsButton = document.getElementById("smsLinkButton");
+                smsButton.href = `sms:${phoneNumber}?body=${encodeURIComponent(messageBody)}`;
+                smsButton.style.display = "block";
+
                 document.getElementById("previewBox").style.display = "block";
             }, 1200);
         } else {
