@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUMBO SOUND - WAP & WEB RINTONES 2000</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #000080;
+            background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+            color: #00ff00;
+            font-family: 'VT323', monospace;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .marquee-container {
+            background: #ffff00;
+            color: #ff0000;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            padding: 8px;
+            border: 2px dashed #ff00ff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #c0c0c0;
+            border: 4px outset #ffffff;
+            padding: 15px;
+            color: #000000;
+        }
+
+        h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            color: #ff00ff;
+            text-shadow: 2px 2px #00ffff, 4px 4px #ff0000;
+            margin-bottom: 10px;
+        }
+
+        .counter {
+            background: #000;
+            color: #00ff00;
+            font-size: 24px;
+            padding: 5px;
+            border: 2px inset #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .screen {
+            background: #ffffff;
+            border: 3px inset #808080;
+            padding: 10px;
+            min-height: 80px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            text-align: left;
+            color: #000;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: #dfdfdf;
+            border: 3px outset #ffffff;
+            font-family: 'VT323', monospace;
+            font-size: 26px;
+            font-weight: bold;
+            padding: 10px;
+            cursor: pointer;
+            color: #000;
+        }
+
+        button:active {
+            border: 3px inset #ffffff;
+            background: #cfcfcf;
+        }
+
+        .btn-action {
+            background: #00ff00;
+            color: #000;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+        }
+
+        .gif-box {
+            margin-top: 15px;
+            border: 2px solid #ff00ff;
+            background: #000;
+            padding: 5px;
+        }
+
+        .gif-box img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .blink {
+            animation: blinker 0.8s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="marquee-container">
+    <marquee>*** BENVENUTO NEL PORTALE WAP JUMBO! SCARICA TOPOLONA E CRAZY FROG GRATIS! ACCETTIAMO LOGHI E SQUILLI! ***</marquee>
+</div>
+
+<div class="container">
+    <h1>JUMBO TONE 2000</h1>
+    <div style="font-size: 12px; color: #555; margin-bottom: 10px;">SE VUOI IL TRASH, QUI LO TROVI!</div>
+
+    <div class="counter">VISITE: 004892</div>
+
+    <div class="screen" id="screen">
+        1. TOPOLONA<br>
+        2. CRAZY FROG<br>
+        3. DRAGOSTEA DIN TEI<br>
+        4. THE KETCHUP SONG<br>
+        <span class="blink">> SELEZIONA NUMERO...</span>
+    </div>
+
+    <div class="keypad">
+        <button onclick="pressKey('1')">1</button>
+        <button onclick="pressKey('2')">2</button>
+        <button onclick="pressKey('3')">3</button>
+        <button onclick="pressKey('4')">4</button>
+        <button onclick="pressKey('5')">5</button>
+        <button onclick="pressKey('6')">6</button>
+        <button onclick="pressKey('7')">7</button>
+        <button onclick="pressKey('8')">8</button>
+        <button onclick="pressKey('9')">9</button>
+        <button onclick="clearScreen()">C</button>
+        <button onclick="pressKey('0')">0</button>
+        <button onclick="submitData()">#</button>
+    </div>
+
+    <button class="btn-action" onclick="submitData()">INVIA SUPERSQUILLO</button>
+
+    <div class="gif-box" id="result-box" style="display:none;">
+        <div style="color: #00ff00; font-size: 14px; margin-bottom: 5px;">BOOM! INVIATO!</div>
+        <img id="random-gif" src="" alt="Trash GIF">
+    </div>
+</div>
+
+<script>
+    let inputStep = 1; // 1 = scelta suoneria, 2 = inserimento numero destinatario
+    let selectedRingtone = "";
+    let recipientNumber = "";
+
+    const gifs = [
+        "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif",
+        "https://media.giphy.com/media/l0HlRnAWXxn0MhOBK/giphy.gif",
+        "https://media.giphy.com/media/10VxA3X7rC3W2s/giphy.gif",
+        "https://media.giphy.com/media/Ju7l5y9osyymQ/giphy.gif"
+    ];
+
+    function pressKey(num) {
+        let screen = document.getElementById("screen");
+        if (inputStep === 1) {
+            selectedRingtone = num;
+            screen.innerHTML = `HAI SCELTO: ${num}<br><br>INSERISCI N. DESTINATARIO E PREMI #`;
+            inputStep = 2;
+        } else {
+            recipientNumber += num;
+            screen.innerHTML = `SUONERIA: ${selectedRingtone}<br>CELL: ${recipientNumber}_`;
+        }
+    }
+
+    function clearScreen() {
+        inputStep = 1;
+        selectedRingtone = "";
+        recipientNumber = "";
+        document.getElementById("screen").innerHTML = `1. TOPOLONA<br>2. CRAZY FROG<br>3. DRAGOSTEA<br>4. KETCHUP<br><span class="blink">> SELEZIONA NUMERO...</span>`;
+        document.getElementById("result-box").style.display = "none";
+    }
+
+    function submitData() {
+        if (inputStep === 2 && recipientNumber.length > 3) {
+            let screen = document.getElementById("screen");
+            screen.innerHTML = `<span class="blink">ELABORAZIONE MP3 DA YT... 💾</span>`;
+            
+            setTimeout(() => {
+                screen.innerHTML = `FATTO! MP3 E GIF SPEDITI A<br>${recipientNumber} 🚀`;
+                let randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+                document.getElementById("random-gif").src = randomGif;
+                document.getElementById("result-box").style.display = "block";
+            }, 1500);
+        } else {
+            alert("Inserisci prima la scelta e il numero di telefono!");
+        }
+    }
+</script>
+
+</body>
+</html>
