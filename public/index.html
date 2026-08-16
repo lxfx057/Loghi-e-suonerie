@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,12 +114,12 @@
 <body>
 
 <div class="marquee-container">
-    <marquee>*** SCEGLI LA SUONERIA, DIGITA IL NUMERO E INVIA L'SMS CON IL LINK MP3! ***</marquee>
+    <marquee>*** SELECT RINGTONE, ENTER NUMBER & SEND SMS WITH DIRECT DOWNLOAD MP3 LINK! ***</marquee>
 </div>
 
 <div class="container">
     <h1>JUMBO TONE 2000</h1>
-    <div class="sub-title">~* INVIO SMS LINK MP3 *~</div>
+    <div class="sub-title">~* DIRECT MP3 SMS SENDER *~</div>
 
     <div class="screen" id="screen">
         1. Topolona<br>
@@ -128,7 +128,7 @@
         4. Dragostea Din Tei<br>
         5. The Ketchup Song<br>
         6. Super Mario Theme<br>
-        <span class="blink">> STEP 1: DIGITA N. (1-6)...</span>
+        <span class="blink">> STEP 1: PRESS N. (1-6)...</span>
     </div>
 
     <div class="keypad">
@@ -146,7 +146,7 @@
         <button onclick="pressKey('#')">#</button>
     </div>
 
-    <button class="btn-action" style="background: #00ff00; color: #000;" onclick="sendSMS()">INVIA SMS CON LINK MP3 🚀</button>
+    <button class="btn-action" style="background: #00ff00; color: #000;" onclick="sendSMS()">SEND SMS WITH MP3 LINK 🚀</button>
 </div>
 
 <script>
@@ -155,12 +155,12 @@
     let recipientPhone = "";
 
     const ringtonesData = {
-        "1": { name: "Topolona", mp3: "https://www.myinstants.com/media/sounds/topolona.mp3" },
-        "2": { name: "Axel F (Crazy Frog)", mp3: "https://www.myinstants.com/media/sounds/crazy-frog.mp3" },
-        "3": { name: "La Pulce (Virgola)", mp3: "https://www.myinstants.com/media/sounds/virgola-pulce.mp3" },
-        "4": { name: "Dragostea Din Tei", mp3: "https://www.myinstants.com/media/sounds/numa-numa_1.mp3" },
-        "5": { name: "The Ketchup Song", mp3: "https://www.myinstants.com/media/sounds/asereje.mp3" },
-        "6": { name: "Super Mario Theme", mp3: "https://www.myinstants.com/media/sounds/super-mario-bros.mp3" }
+        "1": { name: "Topolona", mp3: "https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Topolona&filename=mz/MzMxNjI5ODc3MzMxNjI5_XlU4R2F0SGIuA.mp3" },
+        "2": { name: "Axel F (Crazy Frog)", mp3: "https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Crazy+Frog+Axel+F&filename=24/24294025-27a9-4674-84c2-9e32a67eeb39.mp3" },
+        "3": { name: "La Pulce (Virgola)", mp3: "https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=La+Pulce+Aquatica&filename=25/25442562-b9cf-4fd3-b883-999081e7d23d.mp3" },
+        "4": { name: "Dragostea Din Tei", mp3: "https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Dragostea+Din+Tei&filename=31/31801261-26c7-43c3-8889-ff371b26bc6a.mp3" },
+        "5": { name: "The Ketchup Song", mp3: "https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=The+Ketchup+Song&filename=36/36254190-2e4d-4e94-a90f-90db2077e6f9.mp3" },
+        "6": { name: "Super Mario Theme", mp3: "https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Super+Mario+Bros&filename=20/20348701-4475-4785-b9f1-a1e649033324.mp3" }
     };
 
     function pressKey(num) {
@@ -170,10 +170,10 @@
             if (ringtonesData[num]) {
                 selectedChoice = num;
                 let songName = ringtonesData[num].name;
-                screen.innerHTML = `HAI SCELTO: [${num}] ${songName}<br><br>STEP 2: DIGITA CELLULARE E PREMI #`;
+                screen.innerHTML = `SELECTED: [${num}] ${songName}<br><br>STEP 2: TYPE PHONE & PRESS #`;
                 currentStep = 2;
             } else {
-                alert("Seleziona un numero valido da 1 a 6!");
+                alert("Please select a valid number from 1 to 6!");
             }
         } else {
             if (num === '#') {
@@ -182,23 +182,22 @@
             }
             recipientPhone += num;
             let songName = ringtonesData[selectedChoice].name;
-            screen.innerHTML = `SUONERIA: ${songName}<br>CELL: ${recipientPhone}_<br><br>(Premi # o il bottone SMS)`;
+            screen.innerHTML = `RINGTONE: ${songName}<br>PHONE: ${recipientPhone}_<br><br>(Press # or SMS button)`;
         }
     }
 
     function sendSMS() {
         if (!selectedChoice || recipientPhone.length < 3) {
-            alert("Seleziona prima la suoneria (1-6) e inserisci il numero di telefono!");
+            alert("Please select a ringtone (1-6) and enter a phone number first!");
             return;
         }
 
         let song = ringtonesData[selectedChoice];
-        let smsText = encodeURIComponent(`Ecco la tua suoneria ${song.name}: scarica l'MP3 qui 👉 ${song.mp3}`);
+        let smsText = encodeURIComponent(`Get your ringtone ${song.name}! Download MP3 directly here: ${song.mp3}`);
         
         let screen = document.getElementById("screen");
-        screen.innerHTML = `APERTURA APP MESSAGGI...<br>DESTINATARIO: ${recipientPhone} ✨`;
+        screen.innerHTML = `OPENING MESSAGES APP...<br>TO: ${recipientPhone} ✨`;
 
-        // Apre direttamente l'applicazione nativa SMS del telefono con numero e testo precompilati
         window.location.href = `sms:${recipientPhone}?body=${smsText}`;
     }
 
@@ -206,7 +205,7 @@
         currentStep = 1;
         selectedChoice = "";
         recipientPhone = "";
-        document.getElementById("screen").innerHTML = `1. Topolona<br>2. Axel F (Crazy Frog)<br>3. La Pulce (Virgola)<br>4. Dragostea Din Tei<br>5. The Ketchup Song<br>6. Super Mario Theme<br><span class="blink">> STEP 1: DIGITA N. (1-6)...</span>`;
+        document.getElementById("screen").innerHTML = `1. Topolona<br>2. Axel F (Crazy Frog)<br>3. La Pulce (Virgola)<br>4. Dragostea Din Tei<br>5. The Ketchup Song<br>6. Super Mario Theme<br><span class="blink">> STEP 1: PRESS N. (1-6)...</span>`;
     }
 </script>
 
