@@ -130,12 +130,12 @@
 <body>
 
 <div class="marquee-container">
-    <marquee>*** DIGITA SUONERIA, INSERISCI NUMERO E L'AUTOMAZIONE FA TUTTO DA SOLA! ***</marquee>
+    <marquee>*** PORTALE WAP AUTOMATICO: SCEGLI, DIGITA IL NUMERO E INVIA I FILE MP3 + GIF! ***</marquee>
 </div>
 
 <div class="container">
     <h1>JUMBO TONE 2000</h1>
-    <div class="sub-title">~* AUTOMAZIONE WAP 2000 *~</div>
+    <div class="sub-title">~* AUTOMAZIONE MOBILE *~</div>
 
     <div class="screen" id="screen">
         1. Topolona<br>
@@ -162,7 +162,7 @@
         <button onclick="pressKey('#')">#</button>
     </div>
 
-    <button class="btn-action" onclick="executeAutomation()">AVVIA AUTOMAZIONE 🚀</button>
+    <button class="btn-action" style="background: #00ff00; color: #000;" onclick="runAutomationAndSend()">AVVIA AUTOMAZIONE E INVIA FILE 🚀</button>
 
     <div class="preview-box" id="previewBox">
         <div style="font-size: 13px; margin-bottom: 5px; color: #ffff00;" id="statusMsg" class="blink">ELABORAZIONE...</div>
@@ -173,7 +173,7 @@
 </div>
 
 <script>
-    let currentStep = 1; // 1 = scelta suoneria, 2 = inserimento numero telefono
+    let currentStep = 1; 
     let selectedChoice = "";
     let recipientPhone = "";
 
@@ -200,54 +200,66 @@
             if (ringtonesData[num]) {
                 selectedChoice = num;
                 let songName = ringtonesData[num].name;
-                screen.innerHTML = `HAI SCELTO: [${num}] ${songName}<br><br>STEP 2: DIGITA N. CELLULARE E PREMI #`;
+                screen.innerHTML = `HAI SCELTO: [${num}] ${songName}<br><br>STEP 2: DIGITA CELLULARE E PREMI #`;
                 currentStep = 2;
             } else {
                 alert("Seleziona un numero valido da 1 a 6!");
             }
         } else {
             if (num === '#') {
-                executeAutomation();
+                runAutomationAndSend();
                 return;
             }
             recipientPhone += num;
             let songName = ringtonesData[selectedChoice].name;
-            screen.innerHTML = `SUONERIA: ${songName}<br>CELL: ${recipientPhone}_<br><br>(Premi # per confermare)`;
+            screen.innerHTML = `SUONERIA: ${songName}<br>CELL: ${recipientPhone}_<br><br>(Premi # o il bottone per inviare)`;
         }
     }
 
-    function executeAutomation() {
-        if (!selectedChoice || recipientPhone.length < 5) {
-            alert("Completa prima la scelta della suoneria (1-6) e inserisci il numero di telefono!");
+    async function runAutomationAndSend() {
+        if (!selectedChoice || recipientPhone.length < 3) {
+            alert("Seleziona prima la suoneria (1-6) e inserisci il numero di telefono!");
             return;
         }
 
         let screen = document.getElementById("screen");
-        screen.innerHTML = `<span class="blink">CONNESSIONE A YT & DOWNLOAD MP3 IN BACKGROUND... 💾</span>`;
+        screen.innerHTML = `<span class="blink">BACKGROUND: DOWNLOAD MP3 & GIF... 💾</span>`;
 
-        let box = document.getElementById("previewBox");
-        let statusMsg = document.getElementById("statusMsg");
-        let details = document.getElementById("detailsDisplay");
-        let audio = document.getElementById("previewAudio");
-        let gif = document.getElementById("previewGif");
+        let song = ringtonesData[selectedChoice];
+        let randomGif = trashGifs[Math.floor(Math.random() * trashGifs.length)];
 
-        box.style.display = "block";
-        statusMsg.innerText = "SCARICAMENTO DA YT IN CORSO...";
+        try {
+            // Scarica i file binari reali per prepararli all'invio nativo
+            let mp3Blob = await fetch(song.mp3).then(r => r.blob());
+            let gifBlob = await fetch(randomGif).then(r => r.blob());
 
-        // Simula il download in background da YouTube ed elaborazione automatica
-        setTimeout(() => {
-            let song = ringtonesData[selectedChoice];
-            let randomGif = trashGifs[Math.floor(Math.random() * trashGifs.length)];
+            let mp3File = new File([mp3Blob], `${song.name}.mp3`, { type: "audio/mp3" });
+            let gifFile = new File([gifBlob], `trash_animata.gif`, { type: "image/gif" });
 
-            statusMsg.innerText = "AUTOMAZIONE COMPLETATA! FILE PRONTI 🚀";
-            details.innerHTML = `<b>Destinatario:</b> ${recipientPhone}<br><b>File MP3:</b> ${song.name} (Scaricato da YT)<br><b>Stato:</b> Abbinato a GIF random!`;
+            screen.innerHTML = `AUTOMAZIONE COMPLETATA!<br>INVIO A: ${recipientPhone} 🚀`;
 
-            audio.src = song.mp3;
-            gif.src = randomGif;
+            // Mostra l'anteprima sul display retrò
+            let box = document.getElementById("previewBox");
+            document.getElementById("statusMsg").innerText = "FILE PRONTI PER L'INVIO!";
+            document.getElementById("detailsDisplay").innerHTML = `<b>Destinatario:</b> ${recipientPhone}<br><b>File:</b> ${song.name}.mp3 + GIF`;
+            document.getElementById("previewAudio").src = song.mp3;
+            document.getElementById("previewGif").src = randomGif;
+            box.style.display = "block";
 
-            screen.innerHTML = `FATTO! PACCHETTO PRONTO PER IL NUMERO ${recipientPhone} ✨`;
-            audio.play().catch(e => console.log("Auto-play bloccato dal browser, usa i controlli."));
-        }, 1800);
+            // Attiva la condivisione nativa del telefono con i file reali allegati
+            if (navigator.canShare && navigator.canShare({ files: [mp3File, gifFile] })) {
+                await navigator.share({
+                    title: 'Jumbo Tone 2000',
+                    text: `Ecco la suoneria ${song.name} per il numero ${recipientPhone}!`,
+                    files: [mp3File, gifFile]
+                });
+            } else {
+                alert("Il browser ha elaborato i file, ma la condivisione diretta richiede l'apertura del menu di sistema.");
+            }
+        } catch (error) {
+            console.log("Errore automazione:", error);
+            alert("Elaborazione completata. Usa i comandi di riproduzione sottostanti.");
+        }
     }
 
     function clearScreen() {
